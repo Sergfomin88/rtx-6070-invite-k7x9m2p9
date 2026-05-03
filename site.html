@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NVIDIA GeForce RTX 6070 Ti — Полный обзор и заявка</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --green: #00ff87; --blue: #00d4ff; --purple: #a855f7; --pink: #ff006e;
+            --dark: #070710; --card-bg: rgba(12, 12, 24, 0.9); --glass-border: rgba(255, 255, 255, 0.07);
+        }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background: var(--dark); color: #fff; overflow-x: hidden; }
+        
+        .bg-orb { position: fixed; border-radius: 50%; filter: blur(140px); pointer-events: none; z-index: 0; }
+        .bg-orb-1 { width: 700px; height: 700px; background: radial-gradient(circle, rgba(0,255,135,0.12), transparent 70%); top: -250px; right: -200px; animation: orbDrift 25s ease-in-out infinite; }
+        .bg-orb-2 { width: 600px; height: 600px; background: radial-gradient(circle, rgba(0,212,255,0.1), transparent 70%); bottom: -200px; left: -200px; animation: orbDrift 30s ease-in-out infinite reverse; }
+        .bg-orb-3 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(168,85,247,0.08), transparent 70%); top: 50%; left: 50%; transform: translate(-50%, -50%); animation: orbDrift 20s ease-in-out infinite; }
+        @keyframes orbDrift { 0%,100%{transform:translate(0,0) scale(1)} 25%{transform:translate(40px,-40px) scale(1.05)} 50%{transform:translate(-30px,30px) scale(0.95)} 75%{transform:translate(20px,20px) scale(1.02)} }
+        
+        .grid-bg { position: fixed; inset: 0; background-image: linear-gradient(rgba(0,255,135,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,135,0.025) 1px, transparent 1px); background-size: 80px 80px; z-index: 0; pointer-events: none; }
+        
+        .particle-container { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+        .particle { position: absolute; border-radius: 50%; opacity: 0; animation: pRise linear infinite; }
+        @keyframes pRise { 0%{opacity:0;transform:translateY(100vh) scale(0)} 10%{opacity:.7} 90%{opacity:.2} 100%{opacity:0;transform:translateY(-5vh) scale(1)} }
+
+        nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 16px 40px; display: flex; align-items: center; justify-content: space-between; backdrop-filter: blur(20px); background: rgba(7,7,16,0.7); border-bottom: 1px solid var(--glass-border); transition: all 0.3s ease; }
+        nav.scrolled { padding: 12px 40px; background: rgba(7,7,16,0.95); }
+        .nav-logo { display: flex; align-items: center; gap: 10px; font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 1.1rem; text-decoration: none; color: #fff; }
+        .nav-logo .logo-icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--green), var(--blue)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: #000; font-weight: 900; }
+        .nav-links { display: flex; gap: 28px; list-style: none; }
+        .nav-links a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: color 0.3s; letter-spacing: 0.5px; cursor: pointer; }
+        .nav-links a:hover, .nav-links a.active { color: var(--green); }
+        .nav-cta { padding: 8px 20px; background: rgba(0,255,135,0.1); border: 1px solid rgba(0,255,135,0.3); border-radius: 8px; color: var(--green); font-size: 0.8rem; font-weight: 600; text-decoration: none; transition: all 0.3s; cursor: pointer; display: inline-block; }
+        .nav-cta:hover { background: rgba(0,255,135,0.2); }
+        .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; z-index: 101; background: none; border: none; padding: 8px; }
+        .hamburger span { display: block; width: 24px; height: 2px; background: #fff; border-radius: 2px; transition: all 0.3s; }
+        .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+        .hamburger.active span:nth-child(2) { opacity: 0; }
+        .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+        .mobile-menu { display: none; position: fixed; inset: 0; background: rgba(7,7,16,0.97); backdrop-filter: blur(20px); z-index: 99; flex-direction: column; align-items: center; justify-content: center; gap: 32px; }
+        .mobile-menu.visible { display: flex; }
+        .mobile-menu a { color: rgba(255,255,255,0.7); text-decoration: none; font-family: 'Orbitron', sans-serif; font-size: 1.2rem; font-weight: 600; transition: color 0.3s; cursor: pointer; }
+        .mobile-menu a:hover { color: var(--green); }
+
+        .hero { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 120px 20px 60px; }
+        .hero-badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 20px; background: rgba(0,255,135,0.08); border: 1px solid rgba(0,255,135,0.15); border-radius: 50px; font-size: 0.75rem; font-weight: 600; color: var(--green); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 28px; animation: badgePulse 3s ease-in-out infinite; }
+        .hero-badge .dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; animation: dotPulse 1.5s ease-in-out infinite; }
+        @keyframes badgePulse { 0%,100%{box-shadow:0 0 20px rgba(0,255,135,0.05)} 50%{box-shadow:0 0 30px rgba(0,255,135,0.15)} }
+        @keyframes dotPulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+        .hero h1 { font-family: 'Orbitron', sans-serif; font-size: clamp(3rem, 8vw, 7rem); font-weight: 900; line-height: 1; margin-bottom: 8px; }
+        .hero h1 .line1 { display: block; background: linear-gradient(135deg, var(--green), var(--blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero h1 .line2 { display: block; font-size: clamp(3.5rem, 10vw, 9rem); background: linear-gradient(180deg, #ffffff 0%, rgba(255,255,255,0.3) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: -3px; }
+        .hero-sub { font-size: clamp(1rem, 2vw, 1.3rem); color: rgba(255,255,255,0.4); margin-top: 20px; max-width: 600px; font-weight: 300; line-height: 1.6; }
+        .hero-sub strong { color: var(--green); font-weight: 600; }
+        .hero-image { position: relative; margin-top: 50px; max-width: 650px; width: 100%; }
+        .hero-image .gpu-glow { position: absolute; inset: -40px; background: radial-gradient(ellipse, rgba(0,255,135,0.12), transparent 70%); filter: blur(40px); animation: glowPulse 4s ease-in-out infinite; }
+        @keyframes glowPulse { 0%,100%{opacity:.5;transform:scale(1)} 50%{opacity:1;transform:scale(1.05)} }
+        .hero-image img { width: 100%; height: auto; position: relative; z-index: 1; filter: drop-shadow(0 20px 80px rgba(0,255,135,0.2)); animation: float 6s ease-in-out infinite; }
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+        .hero-stats { display: flex; gap: 40px; flex-wrap: wrap; justify-content: center; margin-top: 50px; }
+        .hero-stat { text-align: center; }
+        .hero-stat .val { font-family: 'Orbitron', sans-serif; font-size: 2rem; font-weight: 800; background: linear-gradient(135deg, var(--green), var(--blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero-stat .label { font-size: 0.75rem; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 4px; }
+
+        section { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 80px 20px; }
+        .section-label { font-family: 'Orbitron', sans-serif; font-size: 0.7rem; color: var(--green); text-transform: uppercase; letter-spacing: 4px; margin-bottom: 12px; }
+        .section-title { font-family: 'Orbitron', sans-serif; font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 800; margin-bottom: 16px; line-height: 1.2; }
+        .section-desc { color: rgba(255,255,255,0.4); font-size: 1rem; max-width: 600px; line-height: 1.7; margin-bottom: 48px; }
+
+        .specs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+        .spec-card { background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 20px; padding: 32px 28px; backdrop-filter: blur(10px); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); position: relative; overflow: hidden; }
+        .spec-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--green), var(--blue)); opacity: 0; transition: opacity 0.3s; }
+        .spec-card:hover { border-color: rgba(0,255,135,0.2); transform: translateY(-4px); box-shadow: 0 20px 60px rgba(0,255,135,0.05); }
+        .spec-card:hover::before { opacity: 1; }
+        .spec-card .spec-icon { width: 48px; height: 48px; border-radius: 14px; background: rgba(0,255,135,0.08); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 20px; }
+        .spec-card .spec-name { font-size: 0.75rem; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; margin-bottom: 8px; }
+        .spec-card .spec-value { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 6px; }
+        .spec-card .spec-detail { font-size: 0.85rem; color: rgba(255,255,255,0.3); line-height: 1.5; }
+
+        .specs-table-wrapper { background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 24px; overflow: hidden; backdrop-filter: blur(10px); }
+        .specs-table-header { padding: 32px 36px; border-bottom: 1px solid var(--glass-border); display: flex; align-items: center; gap: 16px; }
+        .specs-table-header h3 { font-family: 'Orbitron', sans-serif; font-size: 1.2rem; font-weight: 700; }
+        .spec-row { display: flex; align-items: center; padding: 20px 36px; border-bottom: 1px solid rgba(255,255,255,0.03); transition: background 0.3s; }
+        .spec-row:last-child { border-bottom: none; }
+        .spec-row:hover { background: rgba(255,255,255,0.02); }
+        .spec-row .row-label { width: 260px; flex-shrink: 0; font-size: 0.85rem; color: rgba(255,255,255,0.4); font-weight: 500; }
+        .spec-row .row-value { flex: 1; font-size: 0.95rem; color: #fff; font-weight: 600; }
+        .spec-row .row-value.highlight { color: var(--green); font-family: 'Orbitron', sans-serif; font-size: 0.9rem; }
+        @media (max-width: 768px) { .spec-row { flex-direction: column; align-items: flex-start; gap: 4px; padding: 16px 24px; } .spec-row .row-label { width: auto; font-size: 0.75rem; } }
+
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .feature-card { background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 20px; padding: 40px 32px; backdrop-filter: blur(10px); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .feature-card:hover { border-color: rgba(0,255,135,0.15); transform: translateY(-3px); }
+        .feature-card .feat-icon { font-size: 2.5rem; margin-bottom: 20px; }
+        .feature-card h3 { font-family: 'Orbitron', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; }
+        .feature-card p { color: rgba(255,255,255,0.35); font-size: 0.9rem; line-height: 1.7; }
+
+        .bench-container { background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 24px; padding: 40px; backdrop-filter: blur(10px); }
+        .bench-item { margin-bottom: 28px; }
+        .bench-item:last-child { margin-bottom: 0; }
+        .bench-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .bench-name { font-size: 0.9rem; font-weight: 600; }
+        .bench-fps { font-family: 'Orbitron', sans-serif; font-size: 1rem; font-weight: 700; color: var(--green); }
+        .bench-bar-bg { width: 100%; height: 10px; background: rgba(255,255,255,0.05); border-radius: 5px; overflow: hidden; }
+        .bench-bar { height: 100%; border-radius: 5px; background: linear-gradient(90deg, var(--green), var(--blue)); width: 0; transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1); }
+
+        .form-section { max-width: 600px; margin: 0 auto; }
+        .form-card { background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 24px; padding: 48px 40px; backdrop-filter: blur(20px); position: relative; overflow: hidden; }
+        .form-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--green), var(--blue), var(--purple), var(--pink)); background-size: 300% 100%; animation: borderGrad 6s linear infinite; }
+        @keyframes borderGrad { 0%{background-position:0% 50%} 100%{background-position:300% 50%} }
+        .form-title { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 8px; }
+        .form-subtitle { text-align: center; color: rgba(255,255,255,0.4); font-size: 0.9rem; margin-bottom: 36px; }
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; font-weight: 600; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
+        .form-input { width: 100%; padding: 14px 18px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; color: #fff; font-family: 'Inter', sans-serif; font-size: 0.95rem; outline: none; transition: all 0.3s; }
+        .form-input::placeholder { color: rgba(255,255,255,0.2); }
+        .form-input:focus { border-color: var(--green); background: rgba(0,255,135,0.03); box-shadow: 0 0 0 3px rgba(0,255,135,0.06); }
+        .form-input.error { border-color: var(--pink); box-shadow: 0 0 0 3px rgba(255,0,110,0.1); }
+        .error-msg { font-size: 0.75rem; color: var(--pink); margin-top: 6px; display: none; }
+        .error-msg.visible { display: block; }
+        .submit-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--green), #00cc6a); border: none; border-radius: 12px; color: #000; font-family: 'Orbitron', sans-serif; font-size: 0.9rem; font-weight: 700; letter-spacing: 1px; cursor: pointer; position: relative; overflow: hidden; transition: all 0.3s; text-transform: uppercase; margin-top: 8px; }
+        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 40px rgba(0,255,135,0.25); }
+        .submit-btn::after { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent); transition: left 0.5s; }
+        .submit-btn:hover::after { left: 100%; }
+        .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .spinner { display: none; width: 18px; height: 18px; border: 2px solid rgba(0,0,0,0.2); border-top-color: #000; border-radius: 50%; animation: spin 0.6s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        footer { position: relative; z-index: 1; text-align: center; padding: 40px 20px; border-top: 1px solid var(--glass-border); color: rgba(255,255,255,0.25); font-size: 0.8rem; }
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .divider { width: 80px; height: 2px; background: linear-gradient(90deg, transparent, var(--green), transparent); margin: 0 auto 60px; }
+
+        @media (max-width: 768px) {
+            nav { padding: 12px 20px; }
+            .nav-links { display: none; }
+            .hamburger { display: flex !important; }
+            .hero { padding: 100px 16px 40px; }
+            .hero h1 .line2 { letter-spacing: -1px; }
+            .hero-stats { gap: 24px; }
+            .hero-stat .val { font-size: 1.5rem; }
+            section { padding: 60px 16px; }
+            .specs-grid { grid-template-columns: 1fr; }
+            .features-grid { grid-template-columns: 1fr; }
+            .form-card { padding: 32px 24px; }
+            .bench-container { padding: 24px; }
+            .specs-table-header { padding: 24px; }
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--dark); }
+        ::-webkit-scrollbar-thumb { background: rgba(0,255,135,0.2); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(0,255,135,0.4); }
+
+        .scroll-top { position: fixed; bottom: 30px; right: 30px; z-index: 90; width: 48px; height: 48px; border-radius: 14px; background: rgba(0,255,135,0.1); border: 1px solid rgba(0,255,135,0.3); color: var(--green); font-size: 1.2rem; cursor: pointer; display: none; align-items: center; justify-content: center; transition: all 0.3s; }
+        .scroll-top.visible { display: flex; }
+        .scroll-top:hover { background: rgba(0,255,135,0.2); transform: translateY(-2px); }
+
+        /* Модальное окно успеха */
+        .success-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 1000; justify-content: center; align-items: center; }
+        .success-modal.visible { display: flex; }
+        .success-card { background: var(--card-bg); border: 1px solid rgba(0,255,135,0.3); border-radius: 24px; padding: 48px; text-align: center; max-width: 440px; width: 90%; animation: modalPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes modalPop { from{transform:scale(0.8);opacity:0} to{transform:scale(1);opacity:1} }
+        .success-icon { font-size: 4rem; margin-bottom: 16px; animation: iconBounce 1s ease-in-out infinite; }
+        @keyframes iconBounce { 0%,100%{transform:scale(1)} 50%{transform:scale(1.15)} }
+        .success-title { font-family: 'Orbitron', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--green); margin-bottom: 12px; }
+        .success-text { color: rgba(255,255,255,0.5); font-size: 0.9rem; line-height: 1.6; }
+        .success-close { margin-top: 24px; padding: 12px 32px; background: rgba(0,255,135,0.15); border: 1px solid rgba(0,255,135,0.3); border-radius: 10px; color: var(--green); font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+        .success-close:hover { background: rgba(0,255,135,0.25); }
+    </style>
+</head>
+<body>
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-orb bg-orb-3"></div>
+    <div class="grid-bg"></div>
+    <div class="particle-container" id="particles"></div>
+
+    <nav id="navbar">
+        <a href="#" class="nav-logo"><div class="logo-icon">N</div><span>RTX 6070 Ti</span></a>
+        <ul class="nav-links">
+            <li><a href="#specs" class="nav-link">Характеристики</a></li>
+            <li><a href="#details" class="nav-link">Подробно</a></li>
+            <li><a href="#features" class="nav-link">Технологии</a></li>
+            <li><a href="#benchmarks" class="nav-link">Бенчмарки</a></li>
+            <li><a href="#contact" class="nav-link">Контакт</a></li>
+        </ul>
+        <a href="#contact" class="nav-cta nav-link">Связаться</a>
+        <button class="hamburger" id="hamburger" aria-label="Меню">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
+
+    <div class="mobile-menu" id="mobile-menu">
+        <a href="#specs" class="nav-link">Характеристики</a>
+        <a href="#details" class="nav-link">Подробно</a>
+        <a href="#features" class="nav-link">Технологии</a>
+        <a href="#benchmarks" class="nav-link">Бенчмарки</a>
+        <a href="#contact" class="nav-link">Контакт</a>
+    </div>
+
+    <!-- HERO -->
+    <div class="hero">
+        <div class="hero-badge"><span class="dot"></span> Новое поколение GPU</div>
+        <h1>
+            <span class="line1">GeForce RTX</span>
+            <span class="line2">6070 Ti</span>
+        </h1>
+        <p class="hero-sub">
+            Графическая карта нового поколения на архитектуре <strong>Blackwell</strong>.
+            Невероятная производительность, передовые технологии ИИ и энергоэффективность.
+        </p>
+        <div class="hero-image">
+            <div class="gpu-glow"></div>
+            <img src="https://image.qwenlm.ai/public_source/02b69302-0db0-449d-bd6c-a3ac31c122a9/1b105b883-cb81-4ff9-9f97-03dcdab1c3de.png" alt="NVIDIA GeForce RTX 6070 Ti">
+        </div>
+        <div class="hero-stats">
+            <div class="hero-stat"><div class="val">8832</div><div class="label">CUDA ядер</div></div>
+            <div class="hero-stat"><div class="val">16GB</div><div class="label">GDDR7</div></div>
+            <div class="hero-stat"><div class="val">225W</div><div class="label">TDP</div></div>
+            <div class="hero-stat"><div class="val">DLSS 4</div><div class="label">AI Frame Gen</div></div>
+        </div>
+    </div>
+
+    <!-- SPECS CARDS -->
+    <section id="specs">
+        <div class="reveal">
+            <div class="section-label">01 — Характеристики</div>
+            <h2 class="section-title">Мощность в деталях</h2>
+            <p class="section-desc">Каждый компонент RTX 6070 Ti спроектирован для максимальной производительности в играх и рабочих задачах.</p>
+        </div>
+        <div class="specs-grid reveal">
+            <div class="spec-card"><div class="spec-icon">⚡</div><div class="spec-name">Графический процессор</div><div class="spec-value">GB203-370</div><div class="spec-detail">Архитектура Blackwell 2.0</div></div>
+            <div class="spec-card"><div class="spec-icon">🧠</div><div class="spec-name">CUDA ядра</div><div class="spec-value">8,832</div><div class="spec-detail">69 мультипроцессоров × 128 ядер</div></div>
+            <div class="spec-card"><div class="spec-icon">💾</div><div class="spec-name">Видеопамять</div><div class="spec-value">16 GB</div><div class="spec-detail">GDDR7, 256-бит, 28 Гбит/с</div></div>
+            <div class="spec-card"><div class="spec-icon"></div><div class="spec-name">Тактовая частота</div><div class="spec-value">2.51 GHz</div><div class="spec-detail">Boost до 2510 МГц</div></div>
+            <div class="spec-card"><div class="spec-icon"></div><div class="spec-name">Tensor ядра</div><div class="spec-value">276</div><div class="spec-detail">4-е поколение для ИИ и DLSS</div></div>
+            <div class="spec-card"><div class="spec-icon"></div><div class="spec-name">RT ядра</div><div class="spec-value">69</div><div class="spec-detail">3-е поколение для трассировки лучей</div></div>
+            <div class="spec-card"><div class="spec-icon"></div><div class="spec-name">Энергопотребление</div><div class="spec-value">225W</div><div class="spec-detail">TDP, 16-pin PCIe 5.0</div></div>
+            <div class="spec-card"><div class="spec-icon"></div><div class="spec-name">Пропускная способность</div><div class="spec-value">672 GB/s</div><div class="spec-detail">Скорость обмена с памятью</div></div>
+            <div class="spec-card"><div class="spec-icon">🔗</div><div class="spec-name">Интерфейс</div><div class="spec-value">PCIe 5.0</div><div class="spec-detail">x16, обратная совместимость</div></div>
+        </div>
+    </section>
+
+    <div class="divider reveal"></div>
+
+    <!-- DETAILED TABLE -->
+    <section id="details">
+        <div class="reveal">
+            <div class="section-label">02 — Подробные спецификации</div>
+            <h2 class="section-title">Полная таблица характеристик</h2>
+            <p class="section-desc">Все технические параметры GeForce RTX 6070 Ti.</p>
+        </div>
+        <div class="specs-table-wrapper reveal">
+            <div class="specs-table-header"><h3>📋 RTX 6070 Ti — Спецификации</h3></div>
+            <div class="spec-row"><div class="row-label">Архитектура</div><div class="row-value highlight">NVIDIA Blackwell 2.0</div></div>
+            <div class="spec-row"><div class="row-label">Техпроцесс</div><div class="row-value highlight">4 нм (TSMC N4P)</div></div>
+            <div class="spec-row"><div class="row-label">CUDA ядра</div><div class="row-value highlight">8,832</div></div>
+            <div class="spec-row"><div class="row-label">Tensor ядра</div><div class="row-value">276 (4-е поколение)</div></div>
+            <div class="spec-row"><div class="row-label">RT ядра</div><div class="row-value">69 (3-е поколение)</div></div>
+            <div class="spec-row"><div class="row-label">Базовая частота</div><div class="row-value highlight">2,295 МГц</div></div>
+            <div class="spec-row"><div class="row-label">Boost частота</div><div class="row-value highlight">2,510 МГц</div></div>
+            <div class="spec-row"><div class="row-label">Видеопамять</div><div class="row-value highlight">16 ГБ GDDR7</div></div>
+            <div class="spec-row"><div class="row-label">Шина памяти</div><div class="row-value">256-бит</div></div>
+            <div class="spec-row"><div class="row-label">Скорость памяти</div><div class="row-value highlight">28 Гбит/с</div></div>
+            <div class="spec-row"><div class="row-label">Пропускная способность</div><div class="row-value highlight">672 ГБ/с</div></div>
+            <div class="spec-row"><div class="row-label">FP32 производительность</div><div class="row-value highlight">~44.3 TFLOPS</div></div>
+            <div class="spec-row"><div class="row-label">Tensor производительность</div><div class="row-value highlight">~709 TFLOPS</div></div>
+            <div class="spec-row"><div class="row-label">Видеовыходы</div><div class="row-value">3× DP 2.1 + 1× HDMI 2.1a</div></div>
+            <div class="spec-row"><div class="row-label">Макс. разрешение</div><div class="row-value">7680 × 4320 (8K)</div></div>
+            <div class="spec-row"><div class="row-label">TDP</div><div class="row-value highlight">225 Вт</div></div>
+            <div class="spec-row"><div class="row-label">Рекомендуемый БП</div><div class="row-value">650 Вт</div></div>
+        </div>
+    </section>
+
+    <div class="divider reveal"></div>
+
+    <!-- FEATURES -->
+    <section id="features">
+        <div class="reveal">
+            <div class="section-label">03 — Технологии</div>
+            <h2 class="section-title">Передовые технологии</h2>
+            <p class="section-desc">Инновации, которые делают RTX 6070 Ti лидером.</p>
+        </div>
+        <div class="features-grid reveal">
+            <div class="feature-card"><div class="feat-icon">🤖</div><h3>DLSS 4 Multi Frame</h3><p>Генерация нескольких кадров из одного с помощью ИИ. До 8x прирост FPS без потери качества изображения.</p></div>
+            <div class="feature-card"><div class="feat-icon">💫</div><h3>Ray Tracing 3-го поколения</h3><p>Реалистичное отражение света, тени и глобальное освещение. Играйте с полной трассировкой лучей в 4K.</p></div>
+            <div class="feature-card"><div class="feat-icon">⚡</div><h3>NVIDIA Reflex 2</h3><p>Минимальная задержка ввода. Синхронизация GPU и CPU для максимально отзывчивого геймплея.</p></div>
+            <div class="feature-card"><div class="feat-icon"></div><h3>AV1 кодирование</h3><p>Аппаратное кодирование AV1 для стримеров. Лучшее качество при меньшем битрейте.</p></div>
+            <div class="feature-card"><div class="feat-icon">🧬</div><h3>AI-ускорение</h3><p>276 Tensor ядер 4-го поколения для генерации изображений, нейросетей и машинного обучения.</p></div>
+            <div class="feature-card"><div class="feat-icon"></div><h3>DisplayPort 2.1</h3><p>Мониторы 4K @ 240Hz или 8K @ 60Hz без сжатия сигнала.</p></div>
+        </div>
+    </section>
+
+    <div class="divider reveal"></div>
+
+    <!-- BENCHMARKS -->
+    <section id="benchmarks">
+        <div class="reveal">
+            <div class="section-label">04 — Бенчмарки</div>
+            <h2 class="section-title">Ожидаемая производительность</h2>
+            <p class="section-desc">Прогнозируемые результаты в играх на Ultra, 4K.</p>
+        </div>
+        <div class="bench-container reveal">
+            <div class="bench-item"><div class="bench-header"><span class="bench-name">Cyberpunk 2077 (Ultra + RT + DLSS 4)</span><span class="bench-fps">~110 FPS</span></div><div class="bench-bar-bg"><div class="bench-bar" data-width="85%"></div></div></div>
+            <div class="bench-item"><div class="bench-header"><span class="bench-name">Alan Wake 2 (Ultra + RT + DLSS 4)</span><span class="bench-fps">~85 FPS</span></div><div class="bench-bar-bg"><div class="bench-bar" data-width="70%"></div></div></div>
+            <div class="bench-item"><div class="bench-header"><span class="bench-name">Hogwarts Legacy (Ultra + DLSS 4)</span><span class="bench-fps">~130 FPS</span></div><div class="bench-bar-bg"><div class="bench-bar" data-width="90%"></div></div></div>
+            <div class="bench-item"><div class="bench-header"><span class="bench-name">Starfield (Ultra + DLSS 4)</span><span class="bench-fps">~95 FPS</span></div><div class="bench-bar-bg"><div class="bench-bar" data-width="75%"></div></div></div>
+            <div class="bench-item"><div class="bench-header"><span class="bench-name">Forza Horizon 5 (Ultra + DLSS 4)</span><span class="bench-fps">~150 FPS</span></div><div class="bench-bar-bg"><div class="bench-bar" data-width="95%"></div></div></div>
+            <div class="bench-item"><div class="bench-header"><span class="bench-name">Microsoft Flight Simulator (Ultra + DLSS 4)</span><span class="bench-fps">~75 FPS</span></div><div class="bench-bar-bg"><div class="bench-bar" data-width="60%"></div></div></div>
+        </div>
+    </section>
+
+    <div class="divider reveal"></div>
+
+    <!-- CONTACT FORM -->
+    <section id="contact">
+        <div class="form-section" style="padding-top: 0;">
+            <div class="reveal">
+                <div class="section-label" style="text-align:center;">05 — Контакт</div>
+                <h2 class="section-title" style="text-align:center;">Хотите узнать первыми?</h2>
+                <p class="section-desc" style="text-align:center; margin: 0 auto 40px;">Оставьте данные — уведомим о старте продаж RTX 6070 Ti.</p>
+            </div>
+            <div class="form-card reveal">
+                <form id="contact-form">
+                    <div class="form-group">
+                        <label class="form-label"><span></span> Имя</label>
+                        <input type="text" class="form-input" id="f-name" placeholder="Ваше имя" required>
+                        <div class="error-msg" id="e-name">Введите имя</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><span>🎮</span> Никнейм</label>
+                        <input type="text" class="form-input" id="f-nick" placeholder="Игровой никнейм" required>
+                        <div class="error-msg" id="e-nick">Введите никнейм</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><span>📍</span> Город / Адрес</label>
+                        <input type="text" class="form-input" id="f-city" placeholder="Город доставки" required>
+                        <div class="error-msg" id="e-city">Введите город</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><span>✈️</span> Telegram</label>
+                        <input type="text" class="form-input" id="f-tg" placeholder="@username">
+                    </div>
+                    <button type="submit" class="submit-btn" id="submit-btn">
+                        <span id="btn-text">🚀 Отправить заявку</span>
+                        <div class="spinner" id="btn-spinner"></div>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 RTX 6070 Ti Overview • Характеристики на основе утечек и аналитики. NVIDIA и GeForce — товарные знаки NVIDIA Corporation.</p>
+    </footer>
+
+    <button class="scroll-top" id="scroll-top" title="Наверх">↑</button>
+
+    <!-- Модальное окно успеха -->
+    <div class="success-modal" id="success-modal">
+        <div class="success-card">
+            <div class="success-icon">✅</div>
+            <div class="success-title">Заявка отправлена!</div>
+            <p class="success-text">Спасибо! Мы уведомим вас о старте продаж RTX 6070 Ti.</p>
+            <button class="success-close" onclick="closeModal()">Закрыть</button>
+        </div>
+    </div>
+
+    <script>
+        // ===== PARTICLES =====
+        (function() {
+            var c = document.getElementById('particles');
+            for (var i = 0; i < 35; i++) {
+                var p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.animationDuration = (10 + Math.random() * 15) + 's';
+                p.style.animationDelay = (Math.random() * 12) + 's';
+                var s = 2 + Math.random() * 3;
+                p.style.width = s + 'px'; p.style.height = s + 'px';
+                var cols = ['#00ff87', '#00d4ff', '#a855f7'];
+                p.style.background = cols[Math.floor(Math.random() * cols.length)];
+                c.appendChild(p);
+            }
+        })();
+
+        // ===== SMOOTH SCROLL =====
+        document.querySelectorAll('.nav-link, .nav-cta').forEach(function(link) {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                var targetId = this.getAttribute('href');
+                var target = document.querySelector(targetId);
+                if (target) {
+                    var mm = document.getElementById('mobile-menu');
+                    var hb = document.getElementById('hamburger');
+                    mm.classList.remove('visible');
+                    hb.classList.remove('active');
+                    document.body.style.overflow = '';
+                    var offset = 70;
+                    var top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+                    window.scrollTo({ top: top, behavior: 'smooth' });
+                }
+            });
+        });
+
+        // ===== HAMBURGER =====
+        (function() {
+            var hb = document.getElementById('hamburger');
+            var mm = document.getElementById('mobile-menu');
+            hb.addEventListener('click', function() {
+                hb.classList.toggle('active');
+                mm.classList.toggle('visible');
+                document.body.style.overflow = mm.classList.contains('visible') ? 'hidden' : '';
+            });
+        })();
+
+        // ===== NAV SCROLL =====
+        (function() {
+            var nav = document.getElementById('navbar');
+            var scrollTopBtn = document.getElementById('scroll-top');
+            window.addEventListener('scroll', function() {
+                nav.classList.toggle('scrolled', window.scrollY > 50);
+                scrollTopBtn.classList.toggle('visible', window.scrollY > 500);
+            });
+            scrollTopBtn.addEventListener('click', function() {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        })();
+
+        // ===== SCROLL REVEAL =====
+        (function() {
+            var obs = new IntersectionObserver(function(entries) {
+                entries.forEach(function(e) {
+                    if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+            document.querySelectorAll('.reveal').forEach(function(el) { obs.observe(el); });
+        })();
+
+        // ===== BENCHMARK BARS =====
+        (function() {
+            var obs = new IntersectionObserver(function(entries) {
+                entries.forEach(function(e) {
+                    if (e.isIntersecting) {
+                        var bar = e.target;
+                        setTimeout(function() { bar.style.width = bar.getAttribute('data-width'); }, 200);
+                        obs.unobserve(bar);
+                    }
+                });
+            }, { threshold: 0.3 });
+            document.querySelectorAll('.bench-bar').forEach(function(b) { obs.observe(b); });
+        })();
+
+        // ===== ACTIVE NAV =====
+        (function() {
+            var sections = document.querySelectorAll('section[id]');
+            var navLinks = document.querySelectorAll('.nav-links .nav-link');
+            window.addEventListener('scroll', function() {
+                var current = '';
+                sections.forEach(function(section) {
+                    if (window.pageYOffset >= section.offsetTop - 150) current = section.getAttribute('id');
+                });
+                navLinks.forEach(function(link) {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === '#' + current) link.classList.add('active');
+                });
+            });
+        })();
+
+        // ===== FORM SUBMISSION → ntfy.sh (ИСПРАВЛЕНО: sendBeacon + полный текст) =====
+        (function() {
+            // ==============================
+            // ⚠️ ТВОЙ КАНАЛ NTFY.SH:
+            // ==============================
+            var TOPIC = "my-secret-channel-2282488";
+            // ==============================
+
+            var form = document.getElementById('contact-form');
+            var btn = document.getElementById('submit-btn');
+            var btnText = document.getElementById('btn-text');
+            var spinner = document.getElementById('btn-spinner');
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                var valid = true;
+                var fields = [
+                    { id: 'f-name', errId: 'e-name' },
+                    { id: 'f-nick', errId: 'e-nick' },
+                    { id: 'f-city', errId: 'e-city' }
+                ];
+
+                fields.forEach(function(f) {
+                    var input = document.getElementById(f.id);
+                    var err = document.getElementById(f.errId);
+                    if (!input.value.trim()) {
+                        input.classList.add('error');
+                        err.classList.add('visible');
+                        valid = false;
+                    } else {
+                        input.classList.remove('error');
+                        err.classList.remove('visible');
+                    }
+                });
+
+                if (!valid) return;
+
+                btn.disabled = true;
+                btnText.style.display = 'none';
+                spinner.style.display = 'inline-block';
+
+                var name = document.getElementById('f-name').value;
+                var nickname = document.getElementById('f-nick').value;
+                var address = document.getElementById('f-city').value;
+                var telegram = document.getElementById('f-tg').value || "Не указан";
+
+                // Полный текст сообщения с ВСЕМИ данными
+                var message = 
+                    "🎮 ЗАЯВКА RTX 6070 Ti\n\n" +
+                    "👤 Имя: " + name + "\n" +
+                    "🎮 Никнейм: " + nickname + "\n" +
+                    "📍 Адрес: " + address + "\n" +
+                    "✈️ Telegram: " + telegram + "\n\n" +
+                    "📅 Дата: " + new Date().toLocaleString('ru-RU');
+
+                // Формируем URL с заголовками через параметры
+                var url = 'https://ntfy.sh/' + TOPIC + 
+                    '?title=' + encodeURIComponent('🎮 Заявка: ' + name) +
+                    '&tags=' + encodeURIComponent('rocket,video_game,sparkles,100') +
+                    '&priority=' + encodeURIComponent('high') +
+                    '&filename=' + encodeURIComponent('rtx6070ti.txt');
+
+                // Используем navigator.sendBeacon — работает даже с file:// и передаёт тело!
+                var blob = new Blob([message], { type: 'text/plain' });
+                var sent = navigator.sendBeacon(url, blob);
+
+                setTimeout(function() {
+                    btn.disabled = false;
+                    btnText.style.display = 'inline';
+                    spinner.style.display = 'none';
+                    
+                    if (sent) {
+                        form.reset();
+                        document.getElementById('success-modal').classList.add('visible');
+                    } else {
+                        alert('❌ Ошибка отправки. Проверь интернет.');
+                    }
+                }, 1000);
+            });
+
+            document.querySelectorAll('.form-input').forEach(function(input) {
+                input.addEventListener('input', function() {
+                    this.classList.remove('error');
+                    var errEl = this.parentElement.querySelector('.error-msg');
+                    if (errEl) errEl.classList.remove('visible');
+                });
+            });
+        })();
+
+        function closeModal() {
+            document.getElementById('success-modal').classList.remove('visible');
+        }
+
+        document.getElementById('success-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+    </script>
+</body>
+</html>
+
